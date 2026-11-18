@@ -1,0 +1,2 @@
+package order;
+public enum OrderStatus { CREATED, WAITING, ALLOCATED, IN_PROGRESS, COMPLETED, CANCELLED, REJECTED }

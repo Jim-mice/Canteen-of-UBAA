@@ -1,13 +1,13 @@
-# 已确定的业务规则与设计假设
+# 已确定的业务规则与结构约定
 
-1. 项目是命令行 Java 模拟，JDK 17 兼容，JDK 25 可编译；本阶段不使用 Spring、数据库或 Web UI。
-2. 每个订单仅包含一种 `DishType`。不同菜品必须分别提交订单。
-3. 金额单位为元，必须为正数，类型为 `BigDecimal`。理想制作分钟数为金额除以实际分配厨师数；精度和显示舍入由工作量实现明示约定。
-4. 申请厨师数为正整数。超过该菜品配置总容量的订单应拒绝；资源暂时忙碌时进入等待队列。同窗要求需由单一窗口满足全部人数，否则允许跨同类窗口组合。
-5. 默认资源共 8 窗口、45 厨师：牛肉面 4 窗口分配 3/3/2/2；馄饨 2 窗口各 10 人；黄焖鸡 1 窗口 10 人；湘里湘外 1 窗口 5 人。
-6. 普通窗口公开。湘里湘外要求 `UserGroup.HUNAN` 成员资格。权限依据菜品定义中的可选用户组和用户组成员关系判定，不依据具体用户类或菜名判断。
-7. 用户提交订单，但不选择实际厨师、窗口或调度顺序；调度策略属于系统配置。
-8. 窗口是资源节点，厨师是可分配劳动力。厨师归属窗口固定；窗口只能制作其定义菜品。状态变化集中由资源管理服务控制。
-9. 领域对象尽量不可变。`Order.transitionTo` 仅允许 CREATED→WAITING/ALLOCATED/CANCELLED/REJECTED、WAITING→ALLOCATED/CANCELLED/REJECTED、ALLOCATED→IN_PROGRESS/CANCELLED、IN_PROGRESS→COMPLETED/CANCELLED；终态不可再转移。
-10. Repository 仅负责对象读写，不承担权限、排序或资源分配业务。当前所有 Repository 和服务接口没有持久化或运行实现。
-11. `CREATED`、`WAITING`、`ALLOCATED`、`IN_PROGRESS`、`COMPLETED`、`CANCELLED`、`REJECTED` 为订单状态集合。
+1. 项目使用纯 JDK 构建和运行，Java 17 为兼容基线，可在 JDK 25 环境工作；不引入 Maven、Gradle、数据库或其他第三方依赖。
+2. `src/` 下的一级业务目录对应简单包名：`user`、`menu`、`order`、`resource`、`scheduling`、`simulation`、`config`。启动入口 `src/CanteenApplication.java` 使用默认包。
+3. 每份订单只包含一种菜品；金额使用正数 `BigDecimal` 元值；申请厨师数量为正整数。
+4. 理想制作时间按金额除以厨师数量计算。超过菜品总厨师容量的订单应被拒绝；资源暂时不足则等待。同窗需求由单窗口满足全部厨师需求，否则允许组合多个同菜品窗口。
+5. 默认资源为 8 个窗口、45 名厨师：牛肉面 4 窗口按 3/3/2/2 分配，馄饨 2 窗口各 10 人，黄焖鸡 10 人，湘里湘外 5 人。
+6. 普通窗口对所有用户开放；湘里湘外仅向 `user.UserGroup.HUNAN` 成员开放。权限通过组成员关系和菜品配置判断，不硬编码用户子类或菜名。
+7. 用户不指定实际厨师、窗口或调度顺序；调度策略由系统决定。
+8. 窗口是资源节点，厨师是工作资源；厨师有空闲、工作中、离线状态，窗口有开放、关闭状态。厨师固定隶属一个窗口，窗口只能制作其配置菜品。
+9. 订单状态为 CREATED、WAITING、ALLOCATED、IN_PROGRESS、COMPLETED、CANCELLED、REJECTED。状态迁移由不可变 `Order.transitionTo` 校验，终态不能再次迁移。
+10. Repository 接口仅隔离存储访问，不承担业务调度。所有业务服务和 Repository 目前只有契约，没有具体实现。
+11. 测试使用 JDK 自带断言逻辑和 `main()` 驱动，不依赖 JUnit 或其他测试库。

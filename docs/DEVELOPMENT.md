@@ -1,29 +1,29 @@
 # 开发指南
 
-## 环境
+## 环境要求
 
-- 语言兼容基线：JDK 17；JDK 25 可用。
-- Maven 3.9.11 由 `mvnw.cmd` 自动下载到当前用户 Maven Wrapper 缓存；首次使用需网络访问 Maven Central。
-- 不需要安装 Spring、数据库或其他运行时。
+- 安装 JDK 17 或更高版本；Java 语言/API 兼容基线为 17，支持 JDK 25。
+- 将 JDK 的 `bin` 目录加入 PATH，确保 `java`、`javac` 可用。
+- 不需要 Maven、Gradle、Python、测试框架或第三方库。
 
 ## IDE 导入
 
-在 VS Code 安装 Java Extension Pack 后打开仓库目录，等待 Maven 项目导入。IntelliJ IDEA 选择 **Open** 并打开根目录或 `pom.xml`，以 Maven 项目导入。项目编码为 UTF-8。
+在 VS Code 或 IntelliJ IDEA 中直接打开仓库根目录。项目没有 Maven/Gradle 项目模型；如 IDE 要求指定源目录，将 `src/` 标记为源码目录、`test/` 标记为测试源码目录，并使用 JDK 17 语言级别。包目录位于 `src/` 下一级，测试程序使用默认包。
 
-## 编译、测试、运行
+## 编译、运行、测试
+
+从项目根目录使用 Windows PowerShell、CMD 或双击脚本：
 
 ```powershell
-.\mvnw.cmd clean test
-.\mvnw.cmd package
-java -jar target\canteen-of-ubaa-1.0.0-SNAPSHOT.jar
+.\build.bat
+.\run.bat
+.\test.bat
 ```
 
-启动入口只打印默认食堂资源数量，不会模拟点餐或调度。
+`build.bat` 递归编译 `src/` 并清理重建 `build/`；`run.bat` 成功编译后执行 `CanteenApplication`；`test.bat` 先编译正式源码，再编译测试类并运行 `CanteenConfigurationTest.main()`，该入口会调用订单测试。脚本返回非零退出码表示失败。
 
-## 增加代码
+## 新增类与协作
 
-按职责放入 `domain`、`application`、`repository` 或 `infrastructure` 下的对应子包。领域对象不依赖应用层；应用层依赖接口；实现类建议放在 `infrastructure`，由配置/组合根装配。提交前运行 `clean test`，新增规则需要添加对应单元测试和接口文档。
+把类直接放入对应业务模块目录，并声明匹配的包名，例如 `src/order/NewOrderPolicy.java` 声明 `package order;`。测试类放 `test/`；新增测试后，在 `test/CanteenConfigurationTest.java` 的 `main()` 中调用其 `run()`。接口变更同步维护 `docs/INTERFACES.md`。
 
-## Git 协作
-
-每项功能使用独立分支，提交信息写清模块和变更目的；提交前查看 `git status`，避免提交 `target/`、IDE 缓存、个人配置或密钥。通过 Pull Request 合并，并在 PR 描述中记录接口变化与验证命令。不要直接改写共享分支历史。
+使用独立 Git 分支完成任务，提交前运行 `test.bat` 并检查 `git status`。不要提交 `build/`、`.class` 文件、IDE 缓存、个人配置或凭证。通过 Pull Request 协作，不要改写共享分支历史。
