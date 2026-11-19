@@ -5,11 +5,7 @@ public final class CanteenConfigurationTest {
     private CanteenConfigurationTest() { }
 
     public static void main(String[] args) {
-        run();
-        System.out.println("PASS CanteenConfigurationTest");
-        OrderTest.run();
-        System.out.println("PASS OrderTest");
-        System.out.println("All tests passed.");
+        TestSuite.main(args);
     }
 
     public static void run() {

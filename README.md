@@ -23,4 +23,4 @@ docs/      架构、接口、开发、分工与设计规则
 build/     本地生成的 class 文件（已加入 .gitignore）
 ```
 
-各模块与后续任务见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)、[`docs/INTERFACES.md`](docs/INTERFACES.md) 和 [`docs/TEAM_TASKS.md`](docs/TEAM_TASKS.md)。当前已提供领域对象、默认资源配置和核心服务/Repository 接口；调度、权限、资源分配与持久化等接口尚无业务实现。
+各模块与后续任务见 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)、[`docs/INTERFACES.md`](docs/INTERFACES.md) 和 [`docs/TEAM_TASKS.md`](docs/TEAM_TASKS.md)。A 组已完成用户存储、通用窗口权限策略、订单存储、工作量计算和订单提交服务。B 组的资源分配与资源管理、C 组的调度和仿真实现仍待接入；使用和联调方式见 [`docs/MODULE_A.md`](docs/MODULE_A.md)。

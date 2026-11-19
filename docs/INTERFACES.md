@@ -1,6 +1,6 @@
 # 核心接口清单
 
-Java 包名直接对应 `src/` 的一级业务目录。接口签名保持本次精简前的定义；迁移只调整包名和导入路径。
+Java 包名直接对应 `src/` 的一级业务目录。公共接口签名保持既有定义；新增实现类通过构造注入依赖。
 
 | 接口 | 文件 | 方法与约定 | 负责模块 |
 |---|---|---|---|
@@ -24,4 +24,10 @@ Java 包名直接对应 `src/` 的一级业务目录。接口签名保持本次�
 - `User` 在构造时复制用户组成员关系；湖南组常量是 `UserGroup.HUNAN`。
 - `Chef` 身份与窗口归属固定；厨师状态由资源管理实现负责维护。
 
-此仓库尚未提供上述服务接口的业务实现、内存 Repository、FIFO 调度、权限策略、资源分配器或仿真执行器。接口可供组员依赖和实现，但不能被视为已可运行的业务功能。
+## A 组现有实现
+
+- `InMemoryUserRepository` 与 `InMemoryOrderRepository` 使用 ID 索引的 `LinkedHashMap`；订单状态查询按保存顺序返回不可变快照。
+- `DefaultWindowAccessPolicy` 通过 `DishDefinition.requiredGroup()` 与用户的 `groups()` 做通用成员关系判断。
+- `DefaultWorkloadCalculator` 使用 `MathContext.DECIMAL128` 计算正金额除以正厨师数。
+- `DefaultOrderService` 构造方法注入用户/订单 Repository、访问策略、调度服务、仿真时钟和菜品定义集合。订单保存后调用 `enqueue`，再查询并返回可能已更新的状态。
+- B 组的 `ResourceAllocator`/`ResourceManager` 和 C 组的 `SchedulerService`/`SimulationClock` 仍由对应组实现；A 未代做这些业务。

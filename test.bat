@@ -28,7 +28,7 @@ if not "%TEST_COMPILE_RESULT%"=="0" (
     exit /b %TEST_COMPILE_RESULT%
 )
 
-java -cp "%BUILD_DIR%" CanteenConfigurationTest
+java -cp "%BUILD_DIR%" TestSuite
 set "TEST_RESULT=%ERRORLEVEL%"
 if not "%TEST_RESULT%"=="0" (
     echo 测试失败。

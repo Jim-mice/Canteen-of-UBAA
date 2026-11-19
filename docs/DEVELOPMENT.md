@@ -20,10 +20,10 @@
 .\test.bat
 ```
 
-`build.bat` 递归编译 `src/` 并清理重建 `build/`；`run.bat` 成功编译后执行 `CanteenApplication`；`test.bat` 先编译正式源码，再编译测试类并运行 `CanteenConfigurationTest.main()`，该入口会调用订单测试。脚本返回非零退出码表示失败。
+`build.bat` 递归编译 `src/` 并清理重建 `build/`；`run.bat` 成功编译后执行 `CanteenApplication`；`test.bat` 先编译正式源码，再编译 `test/` 下全部测试类并运行 `TestSuite.main()`。脚本返回非零退出码表示失败。
 
 ## 新增类与协作
 
-把类直接放入对应业务模块目录，并声明匹配的包名，例如 `src/order/NewOrderPolicy.java` 声明 `package order;`。测试类放 `test/`；新增测试后，在 `test/CanteenConfigurationTest.java` 的 `main()` 中调用其 `run()`。接口变更同步维护 `docs/INTERFACES.md`。
+把类直接放入对应业务模块目录，并声明匹配的包名，例如 `src/order/NewOrderPolicy.java` 声明 `package order;`。测试类放 `test/`，并在 `test/TestSuite.java` 注册其 `run()`。接口变更同步维护 `docs/INTERFACES.md`。
 
 使用独立 Git 分支完成任务，提交前运行 `test.bat` 并检查 `git status`。不要提交 `build/`、`.class` 文件、IDE 缓存、个人配置或凭证。通过 Pull Request 协作，不要改写共享分支历史。

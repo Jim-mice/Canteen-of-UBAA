@@ -9,5 +9,6 @@
 7. 用户不指定实际厨师、窗口或调度顺序；调度策略由系统决定。
 8. 窗口是资源节点，厨师是工作资源；厨师有空闲、工作中、离线状态，窗口有开放、关闭状态。厨师固定隶属一个窗口，窗口只能制作其配置菜品。
 9. 订单状态为 CREATED、WAITING、ALLOCATED、IN_PROGRESS、COMPLETED、CANCELLED、REJECTED。状态迁移由不可变 `Order.transitionTo` 校验，终态不能再次迁移。
-10. Repository 接口仅隔离存储访问，不承担业务调度。所有业务服务和 Repository 目前只有契约，没有具体实现。
+10. Repository 接口仅隔离存储访问，不承担业务调度。A 组使用内存实现供当前集成和测试；不提供数据库或文件持久化。
 11. 测试使用 JDK 自带断言逻辑和 `main()` 驱动，不依赖 JUnit 或其他测试库。
+12. `DefaultOrderService` 先保存 CREATED 订单，再调用一次 `SchedulerService.enqueue`。enqueue 抛异常时异常原样向上抛出，不自动重试、不回滚 A 已保存的订单，也不覆盖调度器可能已保存的状态；调用方应查询订单结果后再决定后续动作，避免重复下单。
